@@ -32,7 +32,6 @@ local myData = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/s
         ["Eto Yoshimura"] = false,
         ["Koutarou Amon"] = false,
         ["Nishiki Nishio"] = true,
-        ["Touka Krishima"] = true,
         ["Boss"] = true
     },
     DistanceFromNpc = 5,
@@ -50,7 +49,6 @@ local array = {
         ["Eto Yoshimura"] = 1250,
         ["Koutarou Amon"] = 750,
         ["Nishiki Nishio"] = 250,
-        ["Touka Krishima"] = 250,
         ["Boss"] = 50
     },
 
