@@ -1,5 +1,5 @@
 local gui = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/z4gs/scripts/master/testtttt.lua"))():AddWindow("Ro-Ghoul", {
-    main_color = Color3.fromRGB(0,0,0),
+    main_color = Color3.fromRGB(139,0,0),
     min_size = Vector2.new(373, 340),
     can_resize = false
 })
@@ -380,7 +380,7 @@ local function collect(npc)
 end
 
 local function pressKey(topress)
-    fire(player.Character.Remotes.KeyEvent, key, topress, "Down", player:GetMouse().Hit, nil, workspace.Camera.CFrame)
+    fire(player.Character.Remotes.KeyEvent, key, topress, "Up", player:GetMouse().Hit, nil, workspace.Camera.CFrame)
 end
 
 player.PlayerFolder.Stats.RC.Changed:Connect(function(value)
