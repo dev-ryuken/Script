@@ -1,5 +1,5 @@
 local gui = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/z4gs/scripts/master/testtttt.lua"))():AddWindow("Ro-Ghoul", {
-    main_color = Color3.fromRGB(139,0,0),
+    main_color = Color3.fromRGB(127, 0, 255),
     min_size = Vector2.new(373, 340),
     can_resize = false
 })
@@ -484,7 +484,7 @@ while true do
                     labels("text", "Moving to: "..npc.Name)
 
                     if myData.Boss[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then
-                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(0),180,180) + Vector3.new(0,myData.DistanceFromBoss,0))
+                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData.DistanceFromBoss,0))
                     else
                         tp(npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc)
                     end
@@ -504,7 +504,7 @@ while true do
                                         pressKey(x)
                                     end
                                 end
-                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData.DistanceFromBoss ,0)
+                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(180),0,0) + Vector3.new(0,myData.DistanceFromBoss ,0)
                             else
                                 player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc 
                             end
