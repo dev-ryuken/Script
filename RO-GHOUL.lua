@@ -380,7 +380,7 @@ local function collect(npc)
 end
 
 local function pressKey(topress)
-    fire(player.Character.Remotes.KeyEvent, key, topress, "Up", player:GetMouse().Hit, nil, workspace.Camera.CFrame)
+    fire(player.Character.Remotes.KeyEvent, key, topress, "Down", player:GetMouse().Hit, nil, workspace.Camera.CFrame)
 end
 
 player.PlayerFolder.Stats.RC.Changed:Connect(function(value)
@@ -484,7 +484,7 @@ while true do
                     labels("text", "Moving to: "..npc.Name)
 
                     if myData.Boss[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then
-                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData.DistanceFromBoss,0))
+                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(180),0,0) + Vector3.new(0,myData.DistanceFromBoss,0))
                     else
                         tp(npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc)
                     end
