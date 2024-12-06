@@ -165,7 +165,7 @@ tab2:AddSlider("Distance from NPC", function(x)
 end, {min = 0, max = 10}):Set(10)
 
 tab2:AddSlider("Distance from Bosses", function(x)
-    myData.DistanceFromBoss = x 
+    myData.DistanceFromBoss = x * -1
 end, {min = 0, max = 30}):Set(95)
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
@@ -504,8 +504,8 @@ while true do
                                         pressKey(x)
                                     end
                                 end
-                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(0),20,20) + Vector3.new(0,myData.DistanceFromBoss ,0)
-                            else
+                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(90), 0) + Vector3.new(myData.DistanceFromBoss, 0, 0)
+                                else
                                 player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc 
                             end
                             if player.PlayerFolder.CanAct.Value then
