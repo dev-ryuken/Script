@@ -156,17 +156,17 @@ for i,v in pairs(array.boss) do
     end):Set(myData.Boss[i])
 end
 
-tab2:AddSlider("TP Speed", function(x)
+CreateTouchSlider(tab2, "TP Speed", function(x)
     myData.TeleportSpeed = x
 end, {min = 90, max = 300}):Set(95)
 
 tab2:AddSlider("Distance from NPC", function(x)
     myData.DistanceFromNpc = x * -1
-end, {min = 0, max = 10}):Set(10)
+end, {min = 0, max = 10}):Set(20)
 
 tab2:AddSlider("Distance from Bosses", function(x)
-    myData.DistanceFromBoss = x * -1
-end, {min = 0, max = 30}):Set(95)
+    myData.DistanceFromBoss = x * 0
+end, {min = 0, max = 50}):Set(95)
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
