@@ -24,7 +24,7 @@ local myData = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/s
     Skills = {
         E = true,
         F = true,
-        C = true,
+        C = false,
         R = true
     },
     Boss = {
@@ -166,7 +166,7 @@ end, {min = 0, max = 10}):Set(10)
 
 tab2:AddSlider("Distance from Bosses", function(x)
     myData.DistanceFromBoss = x * -1
-end, {min = 0, max = 30}):Set(99)
+end, {min = 0, max = 20}):Set(10)
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
@@ -484,7 +484,7 @@ while true do
                     labels("text", "Moving to: "..npc.Name)
 
                     if myData.Boss[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then
-                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(270),0,0) + Vector3.new(0,myData.DistanceFromBoss,0))
+                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData.DistanceFromBoss,0))
                     else
                         tp(npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc)
                     end
@@ -504,8 +504,8 @@ while true do
                                         pressKey(x)
                                     end
                                 end
-                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(0), 20, 20) + Vector3.new(0, myData.DistanceFromBoss, 0)
-                                else
+                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(0),20,20) + Vector3.new(0,myData.DistanceFromBoss ,0)
+                            else
                                 player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc 
                             end
                             if player.PlayerFolder.CanAct.Value then
