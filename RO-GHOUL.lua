@@ -166,7 +166,7 @@ end, {min = 0, max = 10}):Set(10)
 
 tab2:AddSlider("Distance from Bosses", function(x)
     myData.DistanceFromBoss = x * -1
-end, {min = 0, max = 20}):Set(10)
+end, {min = 0, max = 30}):Set(99)
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
