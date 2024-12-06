@@ -1,8 +1,35 @@
+-- Create a loading screen
+local screenGui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+screenGui.Name = "LoadingScreen"
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(1, 0, 1, 0)  -- Full screen
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.5
+frame.Parent = screenGui
+
+local loadingLabel = Instance.new("Please be patient")
+loadingLabel.Text = "Loading..."
+loadingLabel.Size = UDim2.new(0, 200, 0, 50)
+loadingLabel.Position = UDim2.new(0.5, -100, 0.5, -25)
+loadingLabel.BackgroundTransparency = 1
+loadingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+loadingLabel.TextScaled = true
+loadingLabel.Parent = frame
+
+ 
+wait(5)  
+
+screenGui:Destroy()  
+
+
 local gui = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/z4gs/scripts/master/testtttt.lua"))():AddWindow("RYUKEN HUB", {
     main_color = Color3.fromRGB(127, 0, 255),
     min_size = Vector2.new(373, 340),
     can_resize = false
 })
+
+
 
 local get = setmetatable({}, {
     __index = function(a, b)
@@ -156,7 +183,7 @@ for i,v in pairs(array.boss) do
     end):Set(myData.Boss[i])
 end
 
-CreateTouchSlider(tab2, "TP Speed", function(x)
+tab2:AddSlider("TP Speed", function(x)
     myData.TeleportSpeed = x
 end, {min = 90, max = 300}):Set(95)
 
