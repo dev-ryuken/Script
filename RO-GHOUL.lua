@@ -24,7 +24,7 @@ local myData = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/s
     Skills = {
         E = true,
         F = true,
-        C = false,
+        C = true,
         R = true
     },
     Boss = {
@@ -162,7 +162,7 @@ end, {min = 90, max = 300}):Set(95)
 
 tab2:AddSlider("Distance from NPC", function(x)
     myData.DistanceFromNpc = x * -1
-end, {min = 0, max = 10}):Set(10)
+end, {min = 0, max = 10}):Set(50)
 
 tab2:AddSlider("Distance from Bosses", function(x)
     myData.DistanceFromBoss = x * -1
