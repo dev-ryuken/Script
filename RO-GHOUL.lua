@@ -158,7 +158,7 @@ end
 
 tab2:AddSlider("TP Speed", function(x)
     myData.TeleportSpeed = x
-end, {min = 90, max = 300}):Set(95)
+end, {min = 90, max = 300}):Set(99)
 
 tab2:AddSlider("Distance from NPC", function(x)
     myData.DistanceFromNpc = x * -1
@@ -166,7 +166,7 @@ end, {min = 0, max = 10}):Set(50)
 
 tab2:AddSlider("Distance from Bosses", function(x)
     myData.DistanceFromBoss = x * -1
-end, {min = 0, max = 20}):Set(10)
+end, {min = 0, max = 20}):Set(20)
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
@@ -504,7 +504,7 @@ while true do
                                         pressKey(x)
                                     end
                                 end
-                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(0),20,20) + Vector3.new(0,myData.DistanceFromBoss ,0)
+                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),20,20) + Vector3.new(0,myData.DistanceFromBoss ,0)
                             else
                                 player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc 
                             end
