@@ -168,7 +168,7 @@ tab2:AddSlider("Distance from Bosses", function(x)
     myData.DistanceFromBoss = x * -1
 end, {min = 0, max = 100}):Set(95)
 
-tab2:AddSlider("Gya From Distance", function(x)
+tab2:AddSlider("Distance From Gyakusatsu", function(x)
     myData.DistanceFromGya = x * -1
 end, {min = 0, max = 20}):Set(20)
 
