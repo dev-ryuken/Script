@@ -168,6 +168,10 @@ tab2:AddSlider("Distance from Bosses", function(x)
     myData.DistanceFromBoss = x * -1
 end, {min = 0, max = 100}):Set(95)
 
+tab2:AddSlider("Gya From Distance", function(x)
+    myData.DistanceFromGya = x * -1
+end, {min = 0, max = 20}):Set(20)
+
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
 local progress = tab3:AddSlider("Progress", nil, {min = 0, max = 100, readonly = true})
@@ -484,7 +488,7 @@ while true do
                     labels("text", "Moving to: "..npc.Name)
 
                     if myData.Boss[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then
-                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(0),0,0) + Vector3.new(0,myData.DistanceFromBoss,0))
+                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(0),0,0) + Vector3.new(0,myData.DistanceFromGya ,0))
                     else
                         tp(npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc)
                     end
