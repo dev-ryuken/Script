@@ -520,7 +520,7 @@ elseif npc.Parent.Name == "GyakusatsuSpawn" then
         end
     end
     -- Adjust position for Gyakusatsu
-    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.LookVector * myData.DistanceFromGya
+    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),20,20) + Vector3.new(0,myData.DistanceFromGya ,0)
 
 else
     -- Default logic for other NPCs
