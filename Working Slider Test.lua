@@ -502,16 +502,31 @@ while true do
                             if not findobj(player.Character, "Kagune") and not findobj(player.Character, "Quinque")  then
                                 pressKey(array.stage)
                             end
-                            if myData.Boss[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then 
-                                for x,y in pairs(myData.Skills) do
-                                    if player.PlayerFolder.CanAct.Value and y and array.skills[x].Value ~= "DownTime" then
-                                        pressKey(x)
-                                    end
-                                end
-                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromBoss or myData.DistanceFromGya
-                            else
-                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc 
-                            end
+                           if myData.Boss[npc.Name] then
+    -- Boss farm logic
+    for x, y in pairs(myData.Skills) do
+        if player.PlayerFolder.CanAct.Value and y and array.skills[x].Value ~= "DownTime" then
+            pressKey(x)
+        end
+    end
+    -- Adjust position for Boss
+    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.LookVector * myData.DistanceFromBoss
+
+elseif npc.Parent.Name == "GyakusatsuSpawn" then
+    -- Gyakusatsu farm logic
+    for x, y in pairs(myData.Skills) do
+        if player.PlayerFolder.CanAct.Value and y and array.skills[x].Value ~= "DownTime" then
+            pressKey(x)
+        end
+    end
+    -- Adjust position for Gyakusatsu
+    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.LookVector * myData.DistanceFromGya
+
+else
+    -- Default logic for other NPCs
+    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.LookVector * myData.DistanceFromNpc
+end
+
                             if player.PlayerFolder.CanAct.Value then
                                 pressKey("Mouse1")
                             end
