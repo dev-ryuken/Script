@@ -162,14 +162,14 @@ end, {min = 90, max = 300}):Set(99)
 
 tab2:AddSlider("Distance from NPC", function(x)
     myData.DistanceFromNpc = x * -1
-end, {min = 0, max = 10}):Set(50)
+end, {min = -20, max = 10}):Set(50)
 
 tab2:AddSlider("Distance from Bosses", function(x)
     myData.DistanceFromBoss = x * -1
 end, {min = 0, max = 100}):Set(95)
 
 tab2:AddSlider("Distance from Gyakusatsu", function(x)
-    myData.DistanceFromGya = x
+    myData.DistanceFromGya = x * -1
 end, {min = 0, max = 50}):Set(95) 
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
@@ -520,10 +520,8 @@ elseif npc.Parent.Name == "GyakusatsuSpawn" then
         end
     end
     -- Adjust position for Gyakusatsu
-    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame 
-    * CFrame.new(0, myData.DistanceFromGya, 0) -- Adjust vertical distance
-    * CFrame.Angles(math.rad(180), 0, 0) -- Flip upside down
-                                else
+    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(180),20,20) + Vector3.new(0,myData.DistanceFromBoss ,0)
+    else
     -- Default logic for other NPCs
     player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.LookVector * myData.DistanceFromNpc
 end
