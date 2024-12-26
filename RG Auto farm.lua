@@ -166,11 +166,11 @@ end, {min = 0, max = 10}):Set(50)
 
 tab2:AddSlider("Distance from Bosses", function(x)
     myData.DistanceFromBoss = x * -1
-end, {min = 0, max = 100}):Set(95)
+end, {min = 0, max = 20}):Set(20)
 
 tab2:AddSlider("Distance from Gyakusatsu", function(x)
-    myData.DistanceFromGya = x * -1
-end, {min = 0, max = 50}):Set(95) 
+    myData.DistanceFromGya= x * -1
+end, {min = 0, max = 20}):Set(20)
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
@@ -488,7 +488,7 @@ while true do
                     labels("text", "Moving to: "..npc.Name)
 
                     if myData.Boss[npc.Name] or npc.Parent.Name == "GyakusatsuSpawn" then
-                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData.DistanceFromGya,0))
+                        tp(npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(90),0,0) + Vector3.new(0,myData.DistanceFromBoss,0))
                     else
                         tp(npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc)
                     end
@@ -502,30 +502,24 @@ while true do
                             if not findobj(player.Character, "Kagune") and not findobj(player.Character, "Quinque")  then
                                 pressKey(array.stage)
                             end
-                           if myData.Boss[npc.Name] then
-    -- Boss farm logic
-    for x, y in pairs(myData.Skills) do
-        if player.PlayerFolder.CanAct.Value and y and array.skills[x].Value ~= "DownTime" then
-            pressKey(x)
-        end
-    end
-    -- Adjust position for Boss
-    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.LookVector * myData.DistanceFromBoss
-
-elseif npc.Parent.Name == "GyakusatsuSpawn" then
-    -- Gyakusatsu farm logic
-    for x, y in pairs(myData.Skills) do
-        if player.PlayerFolder.CanAct.Value and y and array.skills[x].Value ~= "DownTime" then
-            pressKey(x)
-        end
-    end
-    -- Adjust position for Gyakusatsu
-    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(180),20,20) + Vector3.new(0,myData.DistanceFromBoss ,0)
-    else
-    -- Default logic for other NPCs
-    player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.LookVector * myData.DistanceFromNpc
-end
-
+                            if myData.Boss[npc.Name] then 
+                                for x,y in pairs(myData.Skills) do
+                                    if player.PlayerFolder.CanAct.Value and y and array.skills[x].Value ~= "DownTime" then
+                                        pressKey(x)
+                                    end
+                                end
+                                  player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.LookVector * myData.DistanceFromBoss
+                                    
+                                elseif npc.Parent.Name == "GyakusatsuSpawn" then
+                                    for x,y in pairs(myData.Skills) do
+                                    if player.PlayerFolder.CanAct.Value and y and array.skills[x].Value ~= "DownTime" then
+                                        pressKey(x)
+                                        end
+                                    end
+                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(180),0,0) + Vector3.new(0,myData.DistanceFromGya ,0)
+                            else
+                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc 
+                            end
                             if player.PlayerFolder.CanAct.Value then
                                 pressKey("Mouse1")
                             end
