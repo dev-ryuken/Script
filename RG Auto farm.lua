@@ -169,8 +169,8 @@ tab2:AddSlider("Distance from Bosses", function(x)
 end, {min = 0, max = 20}):Set(20)
 
 tab2:AddSlider("Distance from Gyakusatsu", function(x)
-    myData.DistanceFromGya= x * -1
-end, {min = 0, max = 20}):Set(20)
+    myData.DistanceFromGya= x 
+end, {min = -20, max = 50}):Set(99)
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
@@ -516,7 +516,7 @@ while true do
                                         pressKey(x)
                                         end
                                     end
-                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(180),0,0) + Vector3.new(0,myData.DistanceFromGya ,0)
+                                player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(280),0,0) + Vector3.new(0,myData.DistanceFromGya ,0)
                             else
                                 player.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame + npc.HumanoidRootPart.CFrame.lookVector * myData.DistanceFromNpc 
                             end
