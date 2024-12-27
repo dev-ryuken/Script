@@ -1,176 +1,126 @@
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.CoreGui
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
--- Main Frame (everything will be inside this)
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 400, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -200, 0.1, 0)
-mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-mainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
-mainFrame.BorderSizePixel = 2
-mainFrame.Visible = true
-mainFrame.Parent = ScreenGui
+local player = Players.LocalPlayer
+local mouse = player:GetMouse()
 
--- Title label
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, 0, 0, 40)
-titleLabel.Text = "Aim Assist Settings"
-titleLabel.BackgroundTransparency = 1
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.TextScaled = true
-titleLabel.Parent = mainFrame
+-- GUI Toggle Variables
+local isAimAssistEnabled = false
+local guiEnabled = false
+local aimAssistDistance = 50 -- Default distance for aim assist
 
--- Aim Assist Toggle
-local aimAssistToggle = Instance.new("TextButton")
-aimAssistToggle.Size = UDim2.new(0, 180, 0, 40)
-aimAssistToggle.Position = UDim2.new(0, 10, 0, 50)
-aimAssistToggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-aimAssistToggle.Text = "Toggle Aim Assist"
-aimAssistToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-aimAssistToggle.TextScaled = true
-aimAssistToggle.Parent = mainFrame
+-- GUI Setup
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.CoreGui
+screenGui.ResetOnSpawn = false
 
-local aimAssistEnabled = false
-aimAssistToggle.MouseButton1Click:Connect(function()
-    aimAssistEnabled = not aimAssistEnabled
-end)
-
--- Aim Assist Distance Slider
-local distanceSlider = Instance.new("TextLabel")
-distanceSlider.Size = UDim2.new(1, -20, 0, 40)
-distanceSlider.Position = UDim2.new(0, 10, 0, 100)
-distanceSlider.Text = "Aim Assist Distance"
-distanceSlider.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-distanceSlider.TextColor3 = Color3.fromRGB(255, 255, 255)
-distanceSlider.TextScaled = true
-distanceSlider.Parent = mainFrame
-
--- Slider functionality
-local distanceSliderVal = 10 -- default value
-local distanceSliderBox = Instance.new("TextBox")
-distanceSliderBox.Size = UDim2.new(0.8, 0, 0, 20)
-distanceSliderBox.Position = UDim2.new(0, 10, 0, 150)
-distanceSliderBox.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-distanceSliderBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-distanceSliderBox.Text = "Distance: " .. distanceSliderVal
-distanceSliderBox.ClearTextOnFocus = false
-distanceSliderBox.TextScaled = true
-distanceSliderBox.Parent = mainFrame
-
-distanceSliderBox.FocusLost:Connect(function()
-    local value = tonumber(distanceSliderBox.Text)
-    if value then
-        distanceSliderVal = math.clamp(value, 0, 50)
-        distanceSliderBox.Text = "Distance: " .. distanceSliderVal
-    end
-end)
-
--- Toggle for Player Hitbox
-local playerHitboxToggle = Instance.new("TextButton")
-playerHitboxToggle.Size = UDim2.new(0, 180, 0, 40)
-playerHitboxToggle.Position = UDim2.new(0, 10, 0, 200)
-playerHitboxToggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-playerHitboxToggle.Text = "Toggle Player Hitbox"
-playerHitboxToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-playerHitboxToggle.TextScaled = true
-playerHitboxToggle.Parent = mainFrame
-
-local playerHitboxEnabled = false
-playerHitboxToggle.MouseButton1Click:Connect(function()
-    playerHitboxEnabled = not playerHitboxEnabled
-end)
-
--- Toggle for Player Info (Health, Level, Distance)
-local playerInfoToggle = Instance.new("TextButton")
-playerInfoToggle.Size = UDim2.new(0, 180, 0, 40)
-playerInfoToggle.Position = UDim2.new(0, 10, 0, 250)
-playerInfoToggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-playerInfoToggle.Text = "Toggle Player Info"
-playerInfoToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-playerInfoToggle.TextScaled = true
-playerInfoToggle.Parent = mainFrame
-
-local playerInfoEnabled = false
-playerInfoToggle.MouseButton1Click:Connect(function()
-    playerInfoEnabled = not playerInfoEnabled
-end)
-
--- Toggle button to show/hide GUI
 local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0, 180, 0, 40)
-toggleButton.Position = UDim2.new(0, 10, 0, 300)
-toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-toggleButton.Text = "Toggle GUI Visibility"
-toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.Parent = screenGui
+toggleButton.Size = UDim2.new(0, 200, 0, 50)
+toggleButton.Position = UDim2.new(0.5, -100, 0, 20) -- Default position: Top Center
+toggleButton.Text = "Aim Assist: OFF"
 toggleButton.TextScaled = true
-toggleButton.Parent = mainFrame
 
-toggleButton.MouseButton1Click:Connect(function()
-    mainFrame.Visible = not mainFrame.Visible
-end)
+-- GUI Style
+toggleButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Black background
+toggleButton.TextColor3 = Color3.new(1, 1, 1) -- White font
+toggleButton.BorderColor3 = Color3.new(1, 0, 0) -- Red border
+toggleButton.BorderSizePixel = 2
 
--- Destroy button
-local destroyButton = Instance.new("TextButton")
-destroyButton.Size = UDim2.new(0, 180, 0, 40)
-destroyButton.Position = UDim2.new(0, 10, 0, 350)
-destroyButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-destroyButton.Text = "Destroy GUI"
-destroyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-destroyButton.TextScaled = true
-destroyButton.Parent = mainFrame
+-- Slider for Aim Assist Distance
+local distanceSlider = Instance.new("TextBox")
+distanceSlider.Parent = screenGui
+distanceSlider.Size = UDim2.new(0, 200, 0, 50)
+distanceSlider.Position = UDim2.new(0.5, -100, 0, 80) -- Positioned below the toggle button
+distanceSlider.Text = "Distance: " .. aimAssistDistance
+distanceSlider.TextScaled = true
+distanceSlider.BackgroundColor3 = Color3.new(0, 0, 0)
+distanceSlider.TextColor3 = Color3.new(1, 1, 1)
+distanceSlider.BorderColor3 = Color3.new(1, 0, 0)
+distanceSlider.BorderSizePixel = 2
 
-destroyButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()  -- Destroy the entire ScreenGui and all its components
-end)
+-- Dragging Logic for GUI
+local dragging = false
+local dragInput, mousePos, framePos
 
--- Update player info above their head
-game:GetService("RunService").Heartbeat:Connect(function()
-    if playerInfoEnabled then
-        for _, player in ipairs(game.Players:GetPlayers()) do
-            if player.Character and player.Character:FindFirstChild("Head") then
-                local head = player.Character.Head
-                local health = player.Character.Humanoid.Health
-                local level = player:FindFirstChild("Level") and player.Level.Value or "N/A"
-                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
-                local infoLabel = Instance.new("BillboardGui")
-                infoLabel.Size = UDim2.new(0, 200, 0, 50)
-                infoLabel.Adornee = head
-                infoLabel.StudsOffset = Vector3.new(0, 3, 0)
-                infoLabel.Parent = head
-
-                local infoText = Instance.new("TextLabel")
-                infoText.Size = UDim2.new(1, 0, 1, 0)
-                infoText.BackgroundTransparency = 1
-                infoText.TextColor3 = Color3.fromRGB(255, 255, 255)
-                infoText.Text = "Health: " .. health .. "\nLevel: " .. level .. "\nDistance: " .. math.floor(distance)
-                infoText.TextScaled = true
-                infoText.Parent = infoLabel
-            end
-        end
+toggleButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragInput = input
+        mousePos = input.Position
+        framePos = toggleButton.Position
     end
 end)
 
--- Update player hitbox visibility and make it green when enabled
-game:GetService("RunService").Heartbeat:Connect(function()
-    if playerHitboxEnabled then
-        for _, player in ipairs(game.Players:GetPlayers()) do
-            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                local hitbox = player.Character:FindFirstChild("HumanoidRootPart")
-                if hitbox then
-                    hitbox.BrickColor = BrickColor.new("Bright green")
-                    hitbox.Size = Vector3.new(10, 10, 10)  -- Increase the size of hitboxes for better visibility
-                end
+toggleButton.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - mousePos
+        toggleButton.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+    end
+end)
+
+toggleButton.InputEnded:Connect(function(input)
+    if input == dragInput then
+        dragging = false
+    end
+end)
+
+-- Toggle Aim Assist on Button Click
+toggleButton.MouseButton1Click:Connect(function()
+    isAimAssistEnabled = not isAimAssistEnabled
+    toggleButton.Text = "Aim Assist: " .. (isAimAssistEnabled and "ON" or "OFF")
+end)
+
+-- Update Distance Slider Value
+distanceSlider.FocusLost:Connect(function()
+    local newValue = tonumber(distanceSlider.Text)
+    if newValue and newValue > 0 then
+        aimAssistDistance = newValue
+        distanceSlider.Text = "Distance: " .. aimAssistDistance
+    else
+        distanceSlider.Text = "Invalid Input"
+    end
+end)
+
+-- Toggle GUI Visibility with F8
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.F8 then
+        guiEnabled = not guiEnabled
+        screenGui.Enabled = guiEnabled
+    end
+end)
+
+-- Get Closest Target Based on Aim Assist Distance
+local function getClosestTarget()
+    local closestDistance = math.huge
+    local closestPlayer = nil
+
+    for _, v in ipairs(Players:GetPlayers()) do
+        if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPos = v.Character.HumanoidRootPart.Position
+            local distance = (targetPos - player.Character.HumanoidRootPart.Position).Magnitude
+
+            if distance < closestDistance and distance < aimAssistDistance then
+                closestDistance = distance
+                closestPlayer = v
             end
         end
-    else
-        for _, player in ipairs(game.Players:GetPlayers()) do
-            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                local hitbox = player.Character:FindFirstChild("HumanoidRootPart")
-                if hitbox then
-                    hitbox.BrickColor = BrickColor.new("Bright red")
-                    hitbox.Size = Vector3.new(2, 2, 2)  -- Reset size when toggled off
-                end
-            end
+    end
+
+    return closestPlayer
+end
+
+-- Aim Assist Logic
+RunService.RenderStepped:Connect(function()
+    if isAimAssistEnabled then
+        local closestPlayer = getClosestTarget()
+        if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPart = closestPlayer.Character.HumanoidRootPart
+            local targetPosition = targetPart.Position
+
+            local camera = workspace.CurrentCamera
+            camera.CFrame = CFrame.new(camera.CFrame.Position, targetPosition)
         end
     end
 end)
