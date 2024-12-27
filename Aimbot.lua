@@ -8,6 +8,7 @@ MainFrame.Size = UDim2.new(0.25, 0, 0.1, 0)  -- Smaller size (25% width, 10% hei
 MainFrame.Position = UDim2.new(0.375, 0, 0.1, 0)  -- Centered horizontally on the screen
 MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 MainFrame.BorderSizePixel = 0
+MainFrame.Visible = true
 MainFrame.Parent = ScreenGui
 
 -- Create a toggle button to show/hide the GUI
@@ -29,75 +30,86 @@ ToggleButton.MouseButton1Click:Connect(function()
     ToggleButton.Text = guiVisible and "Hide GUI" or "Show GUI"
 end)
 
--- Add a slider for adjusting aim assist distance
-local DistanceSlider = Instance.new("TextLabel")
-DistanceSlider.Size = UDim2.new(1, 0, 0.3, 0)  -- Label takes 30% of the height
-DistanceSlider.Position = UDim2.new(0, 0, 0.3, 0)  -- Position below the toggle button
-DistanceSlider.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red border
-DistanceSlider.Text = "Aim Assist Distance: 10"
-DistanceSlider.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
-DistanceSlider.TextSize = 18
-DistanceSlider.TextScaled = true
-DistanceSlider.Parent = MainFrame
+-- Add a label for Aim Assist Strength
+local AimStrengthLabel = Instance.new("TextLabel")
+AimStrengthLabel.Size = UDim2.new(1, 0, 0.3, 0)  -- Label takes 30% of the height
+AimStrengthLabel.Position = UDim2.new(0, 0, 0.3, 0)  -- Position below the toggle button
+AimStrengthLabel.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red border
+AimStrengthLabel.Text = "Aim Assist Strength: 0.5"
+AimStrengthLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+AimStrengthLabel.TextSize = 18
+AimStrengthLabel.TextScaled = true
+AimStrengthLabel.Parent = MainFrame
 
-local Slider = Instance.new("Slider")
-Slider.Size = UDim2.new(1, -20, 0, 30) -- Fit width within screen (minus some space)
-Slider.Position = UDim2.new(0, 10, 0, 60) -- Position below the label
-Slider.MinValue = 0
-Slider.MaxValue = 20
-Slider.Value = 10
-Slider.Parent = MainFrame
+-- Variable for Aim Assist strength
+local aimStrength = 0.5  -- Default aim assist strength value
 
-Slider.Changed:Connect(function(newValue)
-    DistanceSlider.Text = "Aim Assist Distance: " .. math.floor(newValue)
-    -- You can apply this value to adjust the aim assist distance in your game
+-- Function to increase/decrease Aim Assist strength
+local function changeAimStrength(value)
+    aimStrength = value
+    AimStrengthLabel.Text = "Aim Assist Strength: " .. string.format("%.2f", aimStrength)
+end
+
+-- Add buttons to control Aim Assist Strength
+local increaseButton = Instance.new("TextButton")
+increaseButton.Size = UDim2.new(0.5, 0, 0.3, 0)
+increaseButton.Position = UDim2.new(0, 0, 0.6, 0)
+increaseButton.Text = "Increase Strength"
+increaseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+increaseButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+increaseButton.TextSize = 14
+increaseButton.Parent = MainFrame
+increaseButton.MouseButton1Click:Connect(function()
+    changeAimStrength(math.min(aimStrength + 0.1, 1))  -- Max strength of 1
 end)
 
--- Function to find the closest target (Player or NPC)
-local function getClosestTarget()
-    local closestTarget = nil
+local decreaseButton = Instance.new("TextButton")
+decreaseButton.Size = UDim2.new(0.5, 0, 0.3, 0)
+decreaseButton.Position = UDim2.new(0.5, 0, 0.6, 0)
+decreaseButton.Text = "Decrease Strength"
+decreaseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+decreaseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+decreaseButton.TextSize = 14
+decreaseButton.Parent = MainFrame
+decreaseButton.MouseButton1Click:Connect(function()
+    changeAimStrength(math.max(aimStrength - 0.1, 0))  -- Min strength of 0
+end)
+
+-- Function to find the closest player
+local function getClosestPlayer()
+    local closestPlayer = nil
     local closestDistance = math.huge
     local player = game.Players.LocalPlayer
-    local aimAssistDistance = Slider.Value -- Distance from slider
+    local aimAssistDistance = 20  -- You can adjust this range if needed
 
-    -- Check NPCs (Ghouls)
-    for _, npc in pairs(workspace:GetChildren()) do
-        if npc:FindFirstChild("HumanoidRootPart") then
-            local humanoid = npc:FindFirstChild("Humanoid")
-            if humanoid and humanoid.Health > 0 and (npc:FindFirstChild("Tag") and npc.Tag.Value == "G") then
-                local distance = (npc.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).magnitude
-                if distance <= aimAssistDistance and distance < closestDistance then
-                    closestTarget = npc
-                    closestDistance = distance
-                end
-            end
-        end
-    end
-
-    -- Check Players (if applicable)
+    -- Check Players
     for _, target in pairs(game.Players:GetChildren()) do
-        if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+        if target.Character and target.Character:FindFirstChild("HumanoidRootPart") and target ~= player then
             local distance = (target.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).magnitude
             if distance <= aimAssistDistance and distance < closestDistance then
-                closestTarget = target.Character
+                closestPlayer = target.Character
                 closestDistance = distance
             end
         end
     end
 
-    return closestTarget
+    return closestPlayer
 end
 
--- Function to assist in aiming towards the closest target
+-- Function to assist in aiming towards the closest player
 local function aimAssist()
-    local target = getClosestTarget()
+    local target = getClosestPlayer()
     if target then
-        -- Rotate player to face the target
+        -- Calculate the direction and apply the aim assist
         local targetPosition = target.HumanoidRootPart.Position
         local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
         local direction = (targetPosition - playerPosition).unit
         local lookAt = CFrame.new(playerPosition, targetPosition)
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(playerPosition, targetPosition)
+        
+        -- Apply aim assist strength by adjusting the angle of the aim
+        local currentCFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+        local newCFrame = currentCFrame:Lerp(lookAt, aimStrength)  -- Lerp between current and target position based on aim strength
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = newCFrame
     end
 end
 
