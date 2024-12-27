@@ -1,126 +1,110 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
+-- Create the main GUI container for aim assist
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "AimAssistUI"
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-local player = Players.LocalPlayer
-local mouse = player:GetMouse()
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0.25, 0, 0.1, 0)  -- Smaller size (25% width, 10% height)
+MainFrame.Position = UDim2.new(0.375, 0, 0.1, 0)  -- Centered horizontally on the screen
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
 
--- GUI Toggle Variables
-local isAimAssistEnabled = false
-local guiEnabled = false
-local aimAssistDistance = 50 -- Default distance for aim assist
+-- Create a toggle button to show/hide the GUI
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(1, 0, 0.3, 0)  -- Button takes up 30% height of the frame
+ToggleButton.Position = UDim2.new(0, 0, 0, 0)
+ToggleButton.Text = "Hide GUI"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+ToggleButton.TextSize = 18
+ToggleButton.TextScaled = true
+ToggleButton.Parent = MainFrame
 
--- GUI Setup
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game.CoreGui
-screenGui.ResetOnSpawn = false
-
-local toggleButton = Instance.new("TextButton")
-toggleButton.Parent = screenGui
-toggleButton.Size = UDim2.new(0, 200, 0, 50)
-toggleButton.Position = UDim2.new(0.5, -100, 0, 20) -- Default position: Top Center
-toggleButton.Text = "Aim Assist: OFF"
-toggleButton.TextScaled = true
-
--- GUI Style
-toggleButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Black background
-toggleButton.TextColor3 = Color3.new(1, 1, 1) -- White font
-toggleButton.BorderColor3 = Color3.new(1, 0, 0) -- Red border
-toggleButton.BorderSizePixel = 2
-
--- Slider for Aim Assist Distance
-local distanceSlider = Instance.new("TextBox")
-distanceSlider.Parent = screenGui
-distanceSlider.Size = UDim2.new(0, 200, 0, 50)
-distanceSlider.Position = UDim2.new(0.5, -100, 0, 80) -- Positioned below the toggle button
-distanceSlider.Text = "Distance: " .. aimAssistDistance
-distanceSlider.TextScaled = true
-distanceSlider.BackgroundColor3 = Color3.new(0, 0, 0)
-distanceSlider.TextColor3 = Color3.new(1, 1, 1)
-distanceSlider.BorderColor3 = Color3.new(1, 0, 0)
-distanceSlider.BorderSizePixel = 2
-
--- Dragging Logic for GUI
-local dragging = false
-local dragInput, mousePos, framePos
-
-toggleButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragInput = input
-        mousePos = input.Position
-        framePos = toggleButton.Position
-    end
+-- GUI visibility state
+local guiVisible = true
+ToggleButton.MouseButton1Click:Connect(function()
+    guiVisible = not guiVisible
+    MainFrame.Visible = guiVisible
+    ToggleButton.Text = guiVisible and "Hide GUI" or "Show GUI"
 end)
 
-toggleButton.InputChanged:Connect(function(input)
-    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = input.Position - mousePos
-        toggleButton.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
-    end
+-- Add a slider for adjusting aim assist distance
+local DistanceSlider = Instance.new("TextLabel")
+DistanceSlider.Size = UDim2.new(1, 0, 0.3, 0)  -- Label takes 30% of the height
+DistanceSlider.Position = UDim2.new(0, 0, 0.3, 0)  -- Position below the toggle button
+DistanceSlider.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red border
+DistanceSlider.Text = "Aim Assist Distance: 10"
+DistanceSlider.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+DistanceSlider.TextSize = 18
+DistanceSlider.TextScaled = true
+DistanceSlider.Parent = MainFrame
+
+local Slider = Instance.new("Slider")
+Slider.Size = UDim2.new(1, -20, 0, 30) -- Fit width within screen (minus some space)
+Slider.Position = UDim2.new(0, 10, 0, 60) -- Position below the label
+Slider.MinValue = 0
+Slider.MaxValue = 20
+Slider.Value = 10
+Slider.Parent = MainFrame
+
+Slider.Changed:Connect(function(newValue)
+    DistanceSlider.Text = "Aim Assist Distance: " .. math.floor(newValue)
+    -- You can apply this value to adjust the aim assist distance in your game
 end)
 
-toggleButton.InputEnded:Connect(function(input)
-    if input == dragInput then
-        dragging = false
-    end
-end)
-
--- Toggle Aim Assist on Button Click
-toggleButton.MouseButton1Click:Connect(function()
-    isAimAssistEnabled = not isAimAssistEnabled
-    toggleButton.Text = "Aim Assist: " .. (isAimAssistEnabled and "ON" or "OFF")
-end)
-
--- Update Distance Slider Value
-distanceSlider.FocusLost:Connect(function()
-    local newValue = tonumber(distanceSlider.Text)
-    if newValue and newValue > 0 then
-        aimAssistDistance = newValue
-        distanceSlider.Text = "Distance: " .. aimAssistDistance
-    else
-        distanceSlider.Text = "Invalid Input"
-    end
-end)
-
--- Toggle GUI Visibility with F8
-UserInputService.InputBegan:Connect(function(input)
-    if input.KeyCode == Enum.KeyCode.F8 then
-        guiEnabled = not guiEnabled
-        screenGui.Enabled = guiEnabled
-    end
-end)
-
--- Get Closest Target Based on Aim Assist Distance
+-- Function to find the closest target (Player or NPC)
 local function getClosestTarget()
+    local closestTarget = nil
     local closestDistance = math.huge
-    local closestPlayer = nil
+    local player = game.Players.LocalPlayer
+    local aimAssistDistance = Slider.Value -- Distance from slider
 
-    for _, v in ipairs(Players:GetPlayers()) do
-        if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-            local targetPos = v.Character.HumanoidRootPart.Position
-            local distance = (targetPos - player.Character.HumanoidRootPart.Position).Magnitude
-
-            if distance < closestDistance and distance < aimAssistDistance then
-                closestDistance = distance
-                closestPlayer = v
+    -- Check NPCs (Ghouls)
+    for _, npc in pairs(workspace:GetChildren()) do
+        if npc:FindFirstChild("HumanoidRootPart") then
+            local humanoid = npc:FindFirstChild("Humanoid")
+            if humanoid and humanoid.Health > 0 and (npc:FindFirstChild("Tag") and npc.Tag.Value == "G") then
+                local distance = (npc.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).magnitude
+                if distance <= aimAssistDistance and distance < closestDistance then
+                    closestTarget = npc
+                    closestDistance = distance
+                end
             end
         end
     end
 
-    return closestPlayer
-end
-
--- Aim Assist Logic
-RunService.RenderStepped:Connect(function()
-    if isAimAssistEnabled then
-        local closestPlayer = getClosestTarget()
-        if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            local targetPart = closestPlayer.Character.HumanoidRootPart
-            local targetPosition = targetPart.Position
-
-            local camera = workspace.CurrentCamera
-            camera.CFrame = CFrame.new(camera.CFrame.Position, targetPosition)
+    -- Check Players (if applicable)
+    for _, target in pairs(game.Players:GetChildren()) do
+        if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            local distance = (target.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).magnitude
+            if distance <= aimAssistDistance and distance < closestDistance then
+                closestTarget = target.Character
+                closestDistance = distance
+            end
         end
     end
-end)
+
+    return closestTarget
+end
+
+-- Function to assist in aiming towards the closest target
+local function aimAssist()
+    local target = getClosestTarget()
+    if target then
+        -- Rotate player to face the target
+        local targetPosition = target.HumanoidRootPart.Position
+        local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+        local direction = (targetPosition - playerPosition).unit
+        local lookAt = CFrame.new(playerPosition, targetPosition)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(playerPosition, targetPosition)
+    end
+end
+
+-- Aim assist loop
+while true do
+    wait(0.1)  -- 0.1 second interval
+    if guiVisible then
+        aimAssist()
+    end
+end
