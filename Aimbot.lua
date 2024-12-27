@@ -1,139 +1,76 @@
--- Aim Assist Script with GUI Toggle for Educational Purposes Only
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
-local player = game.Players.LocalPlayer
+local player = Players.LocalPlayer
 local mouse = player:GetMouse()
-local uis = game:GetService("UserInputService")
 
--- Settings
-local aimAssistEnabled = true
-local trackPlayer = false
-local aimRadius = 50
-local currentTarget = nil
+-- GUI Toggle Variables
+local isAimAssistEnabled = false
+local guiEnabled = false
 
--- Create GUI
+-- GUI Setup
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "AimAssistGUI"
-screenGui.Parent = player:WaitForChild("PlayerGui")
+screenGui.Parent = game.CoreGui
+screenGui.ResetOnSpawn = false
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 200, 0, 120)
-frame.Position = UDim2.new(0, 20, 0, 20)
-frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-frame.BorderSizePixel = 0
-frame.Visible = false -- Start hidden
-frame.Parent = screenGui
+local toggleButton = Instance.new("TextButton")
+toggleButton.Parent = screenGui
+toggleButton.Size = UDim2.new(0, 200, 0, 50)
+toggleButton.Position = UDim2.new(0.5, -100, 0.9, 0)
+toggleButton.Text = "Aim Assist: OFF"
+toggleButton.TextScaled = true
 
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Text = "Aim Assist Menu"
-titleLabel.Size = UDim2.new(1, 0, 0, 30)
-titleLabel.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
-titleLabel.TextColor3 = Color3.new(1, 1, 1)
-titleLabel.BorderSizePixel = 0
-titleLabel.Parent = frame
+-- GUI Style
+toggleButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Black background
+toggleButton.TextColor3 = Color3.new(1, 1, 1) -- White font
+toggleButton.BorderColor3 = Color3.new(1, 0, 0) -- Red border
+toggleButton.BorderSizePixel = 2
 
-local aimToggleButton = Instance.new("TextButton")
-aimToggleButton.Text = "Aim Assist: Enabled"
-aimToggleButton.Size = UDim2.new(1, 0, 0, 30)
-aimToggleButton.Position = UDim2.new(0, 0, 0, 40)
-aimToggleButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-aimToggleButton.TextColor3 = Color3.new(1, 1, 1)
-aimToggleButton.Parent = frame
-
-local trackToggleButton = Instance.new("TextButton")
-trackToggleButton.Text = "Player Tracking: Disabled"
-trackToggleButton.Size = UDim2.new(1, 0, 0, 30)
-trackToggleButton.Position = UDim2.new(0, 0, 0, 80)
-trackToggleButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-trackToggleButton.TextColor3 = Color3.new(1, 1, 1)
-trackToggleButton.Parent = frame
-
--- Function to get the closest target within aim radius
-local function getClosestTarget()
-    local closestTarget = nil
-    local shortestDistance = aimRadius
-
-    for _, v in pairs(game.Players:GetPlayers()) do
-        if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-            local charPart = v.Character.HumanoidRootPart
-            local screenPos, onScreen = workspace.CurrentCamera:WorldToScreenPoint(charPart.Position)
-            
-            if onScreen then
-                local mousePos = Vector2.new(mouse.X, mouse.Y)
-                local targetPos = Vector2.new(screenPos.X, screenPos.Y)
-                local distance = (mousePos - targetPos).Magnitude
-
-                if distance < shortestDistance then
-                    closestTarget = charPart
-                    shortestDistance = distance
-                end
-            end
-        end
-    end
-
-    return closestTarget
-end
-
--- Function to aim at a target
-local function aimAt(target)
-    if target then
-        local targetPos = workspace.CurrentCamera:WorldToScreenPoint(target.Position)
-        mousemoverel((targetPos.X - mouse.X) / 2, (targetPos.Y - mouse.Y) / 2)
-    end
-end
-
--- Main loop for aim assist and player tracking
-game:GetService("RunService").RenderStepped:Connect(function()
-    if aimAssistEnabled then
-        if trackPlayer and currentTarget then
-            -- Track the specific player
-            if currentTarget.Parent and currentTarget:FindFirstChild("HumanoidRootPart") then
-                aimAt(currentTarget.HumanoidRootPart)
-            else
-                -- If the player leaves or no longer exists, stop tracking
-                currentTarget = nil
-                trackPlayer = false
-                trackToggleButton.Text = "Player Tracking: Disabled"
-                print("Lost target, stopping tracking.")
-            end
-        else
-            -- Find a new target and aim
-            local target = getClosestTarget()
-            if target then
-                aimAt(target)
-            end
-        end
-    end
+-- Toggle Aim Assist on Button Click
+toggleButton.MouseButton1Click:Connect(function()
+    isAimAssistEnabled = not isAimAssistEnabled
+    toggleButton.Text = "Aim Assist: " .. (isAimAssistEnabled and "ON" or "OFF")
 end)
 
--- Toggle Aim Assist via GUI
-aimToggleButton.MouseButton1Click:Connect(function()
-    aimAssistEnabled = not aimAssistEnabled
-    aimToggleButton.Text = "Aim Assist: " .. (aimAssistEnabled and "Enabled" or "Disabled")
-end)
-
--- Toggle Player Tracking via GUI
-trackToggleButton.MouseButton1Click:Connect(function()
-    if not trackPlayer then
-        local target = getClosestTarget()
-        if target then
-            currentTarget = target.Parent
-            trackPlayer = true
-            trackToggleButton.Text = "Player Tracking: Enabled"
-            print("Tracking player:", currentTarget.Name)
-        else
-            print("No target found to track.")
-        end
-    else
-        currentTarget = nil
-        trackPlayer = false
-        trackToggleButton.Text = "Player Tracking: Disabled"
-        print("Stopped tracking.")
-    end
-end)
-
--- Toggle GUI Visibility (F8 Key)
-uis.InputBegan:Connect(function(input)
+-- Toggle GUI Visibility with F8
+UserInputService.InputBegan:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.F8 then
-        frame.Visible = not frame.Visible
+        guiEnabled = not guiEnabled
+        screenGui.Enabled = guiEnabled
+    end
+end)
+
+-- Get Closest Target
+local function getClosestTarget()
+    local closestDistance = math.huge
+    local closestPlayer = nil
+
+    for _, v in ipairs(Players:GetPlayers()) do
+        if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPos = v.Character.HumanoidRootPart.Position
+            local distance = (targetPos - player.Character.HumanoidRootPart.Position).Magnitude
+
+            if distance < closestDistance and distance < 50 then -- Adjust 50 to change the range
+                closestDistance = distance
+                closestPlayer = v
+            end
+        end
+    end
+
+    return closestPlayer
+end
+
+-- Aim Assist Logic
+RunService.RenderStepped:Connect(function()
+    if isAimAssistEnabled then
+        local closestPlayer = getClosestTarget()
+        if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPart = closestPlayer.Character.HumanoidRootPart
+            local targetPosition = targetPart.Position
+
+            local camera = workspace.CurrentCamera
+            camera.CFrame = CFrame.new(camera.CFrame.Position, targetPosition)
+        end
     end
 end)
