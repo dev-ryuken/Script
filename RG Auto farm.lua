@@ -234,6 +234,7 @@ local autoMaskEnabled = false
 
 -- Function to equip the mask based on the team
 local function equipMask()
+    -- Make sure the player is on either "Ghoul" or "CCG"
     if team == "Ghoul" or team == "CCG" then
         local mask = player.Backpack:FindFirstChild("Mask")
         if mask and not player.Character:FindFirstChild("Mask") then
@@ -245,18 +246,21 @@ end
 -- Toggle Auto Mask feature in the UI
 tab4:AddSwitch("Auto Equip Mask", function(bool)
     autoMaskEnabled = bool
+    
+    -- Call equipMask immediately when toggled
+    if autoMaskEnabled then
+        equipMask()  -- Equip mask immediately
+        spawn(autoEquipMaskLoop)  -- Start monitoring if enabled
+    end
 end):Set(autoMaskEnabled)
 
 -- Monitor and automatically equip the mask if needed
 local function autoEquipMaskLoop()
     while autoMaskEnabled do
-        equipMask()
+        equipMask()  -- Keep checking and equipping the mask
         wait(1) -- Check every second
     end
 end
-
--- Start the auto equip mask loop
-spawn(autoEquipMaskLoop)
 
 
 labels.time = {label = tab3:AddLabel("")}
