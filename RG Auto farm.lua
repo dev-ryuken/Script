@@ -231,14 +231,19 @@ end)
 
 -- Auto Mask Feature
 local autoMaskEnabled = false
+-- Auto Mask Feature
+local autoMaskEnabled = false
 
--- Function to equip the mask based on the team
+-- Function to equip the mask using the "M" key
 local function equipMask()
-    -- Make sure the player is on either "Ghoul" or "CCG"
+    -- Check if the player is on "Ghoul" or "CCG"
     if team == "Ghoul" or team == "CCG" then
         local mask = player.Backpack:FindFirstChild("Mask")
         if mask and not player.Character:FindFirstChild("Mask") then
-            mask.Parent = player.Character
+            -- Simulate pressing the "M" key
+            game:GetService("VirtualInputManager"):InputKeyDown(Enum.KeyCode.M)  -- Press the "M" key
+            wait(0.1)  -- Small delay to mimic the key press
+            game:GetService("VirtualInputManager"):InputKeyUp(Enum.KeyCode.M)  -- Release the "M" key
         end
     end
 end
@@ -246,21 +251,22 @@ end
 -- Toggle Auto Mask feature in the UI
 tab4:AddSwitch("Auto Equip Mask", function(bool)
     autoMaskEnabled = bool
-    
-    -- Call equipMask immediately when toggled
+
+    -- Equip mask immediately when toggled
     if autoMaskEnabled then
-        equipMask()  -- Equip mask immediately
-        spawn(autoEquipMaskLoop)  -- Start monitoring if enabled
+        equipMask()  -- Equip the mask immediately
+        spawn(autoEquipMaskLoop)  -- Start the loop to monitor mask equip
     end
 end):Set(autoMaskEnabled)
 
 -- Monitor and automatically equip the mask if needed
 local function autoEquipMaskLoop()
     while autoMaskEnabled do
-        equipMask()  -- Keep checking and equipping the mask
-        wait(1) -- Check every second
+        equipMask()  -- Keep checking and equip the mask
+        wait(1)  -- Check every second
     end
 end
+
 
 
 labels.time = {label = tab3:AddLabel("")}
