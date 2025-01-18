@@ -97,18 +97,16 @@ local function createGui()
         end
     end)
 
-    -- Toggle Aim Assist with "P" Key
-    UserInputService.InputBegan:Connect(function(input)
-        if input.KeyCode == Enum.KeyCode.P then
-            isAimAssistEnabled = not isAimAssistEnabled
-            toggleButton.Text = "Aim Assist: " .. (isAimAssistEnabled and "ON" or "OFF")
-            aimRing.Visible = isAimAssistEnabled
-        end
+    -- Toggle Aim Assist with Tap
+    toggleButton.MouseButton1Click:Connect(function()
+        isAimAssistEnabled = not isAimAssistEnabled
+        toggleButton.Text = "Aim Assist: " .. (isAimAssistEnabled and "ON" or "OFF")
+        aimRing.Visible = isAimAssistEnabled
     end)
 
-    -- Toggle GUI Visibility with F8
-    UserInputService.InputBegan:Connect(function(input)
-        if input.KeyCode == Enum.KeyCode.F8 then
+    -- Toggle GUI Visibility with Tap
+    screenGui.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
             guiEnabled = not guiEnabled
             screenGui.Enabled = guiEnabled
         end
@@ -148,7 +146,7 @@ end
 
 -- Aim Assist Logic
 RunService.RenderStepped:Connect(function()
-    if isAimAssistEnabled and UserInputService:IsKeyDown(Enum.KeyCode.CapsLock) then
+    if isAimAssistEnabled then
         local closestPlayer = getClosestTarget()
         if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
             local targetPart = closestPlayer.Character.HumanoidRootPart
