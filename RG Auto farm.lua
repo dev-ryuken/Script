@@ -173,6 +173,40 @@ tab2:AddSlider("Distance from Gyakusatsu", function(x)
     myData.DistanceFromGya= x * -1
 end, {min = 0, max = 20}):Set(25)
 
+-- Create Auto Wear Mask Switch in Tab 4
+tab4:AddSwitch("Auto Wear Mask", function(bool)
+    array.autoWearMask = bool
+end):Set(false)  -- Default to false (Auto Wear Mask is off)
+
+-- Main loop for Auto Wear Mask functionality
+while true do
+    if array.autofarm then
+        -- Auto Wear Mask functionality
+        if array.autoWearMask then
+            -- Check if the player has the mask equipped
+            if not findobj(player.Character, "Mask") then
+                -- Assuming 'Mask' is the name of the mask in the player's character
+                local mask = game.ReplicatedStorage:WaitForChild("Mask") -- Adjust this path to how your game stores items
+                if mask then
+                    -- Example of equipping the mask
+                    mask.Parent = player.Character
+                end
+            end
+        else
+            -- Logic to remove the mask when Auto Wear Mask is disabled
+            if findobj(player.Character, "Mask") then
+                -- Remove or unequip the mask
+                local mask = player.Character:FindFirstChild("Mask")
+                if mask then
+                    mask:Destroy()  -- Or you could set it to a different parent if that's how your game works
+                end
+            end
+        end
+    end
+    wait(1)  -- Delay to prevent spamming
+end
+
+
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
