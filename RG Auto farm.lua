@@ -173,64 +173,6 @@ tab2:AddSlider("Distance from Gyakusatsu", function(x)
     myData.DistanceFromGya= x * -1
 end, {min = 0, max = 20}):Set(25)
 
-
-local player = game.Players.LocalPlayer
-local remotes = game.ReplicatedStorage.Remotes
-
--- Create Tab 4 for Mask Script
-local tab4 = main:CreateTab("Auto Mask", "ID for icon or blank")
-
--- Add a toggle button for the auto-wear mask function
-local autoMaskToggle
-local maskEquipped = false
-local autoWearEnabled = false
-
--- Function to toggle mask
-local function toggleMask()
-    if player.Character:FindFirstChild("Mask") then
-        remotes.WearMask:FireServer(false) -- Unequip mask
-        maskEquipped = false
-    else
-        remotes.WearMask:FireServer(true) -- Equip mask
-        maskEquipped = true
-    end
-end
-
--- Function to auto-wear mask on respawn
-local function setupAutoWear()
-    player.CharacterAdded:Connect(function(character)
-        character:WaitForChild("Humanoid").Died:Connect(function()
-            maskEquipped = false -- Reset flag on death
-        end)
-
-        character:WaitForChild("HumanoidRootPart") -- Wait for character to fully load
-        wait(1) -- Small delay to ensure everything is ready
-        if autoWearEnabled and not maskEquipped then
-            toggleMask()
-        end
-    end)
-
-    -- Initial check for current character
-    if player.Character and not player.Character:FindFirstChild("Mask") then
-        toggleMask()
-    end
-end
-
--- Set up auto-mask toggle in "Auto Mask" tab
-autoMaskToggle = tab4:CreateToggle("Auto Wear Mask", nil, false, function(state)
-    autoWearEnabled = state
-    if autoWearEnabled then
-        setupAutoWear()
-    end
-end)
-
--- Optional: Bind key for manual toggle
-tab4:CreateButton("Toggle Mask (Manual)", function()
-    toggleMask()
-end)
-
-
-
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
 local progress = tab3:AddSlider("Progress", nil, {min = 0, max = 100, readonly = true})
