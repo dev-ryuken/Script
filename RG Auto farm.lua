@@ -4,6 +4,51 @@ local gui = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/z4gs
     can_resize = false
 })
 
+-- Auto Mask Feature
+local autoMaskEnabled = false
+local userInputService = game:GetService("UserInputService")
+
+-- Function to simulate pressing the "M" key
+local function simulateMKeyPress()
+    -- Create a new key input event for "M" key press
+    local inputObject = Instance.new("InputObject")
+    inputObject.KeyCode = Enum.KeyCode.M
+    inputObject.UserInputType = Enum.UserInputType.Keyboard
+
+    -- Send the key down and key up events
+    userInputService.InputBegan:Fire(inputObject)
+    wait(0.1)  -- Slight delay before simulating key release
+    userInputService.InputEnded:Fire(inputObject)
+end
+
+-- Function to equip the mask
+local function equipMask()
+    -- Check if the player is on "Ghoul" or "CCG" team
+    if team == "Ghoul" or team == "CCG" then
+        simulateMKeyPress()  -- Simulate pressing "M"
+    end
+end
+
+-- Toggle Auto Mask feature in the UI
+tab4:AddSwitch("Auto Equip Mask", function(bool)
+    autoMaskEnabled = bool
+
+    -- Equip mask immediately when toggled on
+    if autoMaskEnabled then
+        equipMask()  -- Equip the mask right away
+        spawn(autoEquipMaskLoop)  -- Start the loop to monitor mask equip
+    end
+end):Set(autoMaskEnabled)
+
+-- Monitor and automatically equip the mask if needed
+local function autoEquipMaskLoop()
+    while autoMaskEnabled do
+        equipMask()  -- Simulate the "M" key press to equip the mask
+        wait(1)  -- Check every second
+    end
+end
+
+
 local get = setmetatable({}, {
     __index = function(a, b)
         return game:GetService(b) or game[b]
@@ -228,51 +273,6 @@ btn2 = tab3:AddButton("Start", function()
         array.trainer, btn2.Text = false, "Start"
     end
 end)
-
--- Auto Mask Feature
-local autoMaskEnabled = false
-local userInputService = game:GetService("UserInputService")
-
--- Function to simulate pressing the "M" key
-local function simulateMKeyPress()
-    -- Create a new key input event for "M" key press
-    local inputObject = Instance.new("InputObject")
-    inputObject.KeyCode = Enum.KeyCode.M
-    inputObject.UserInputType = Enum.UserInputType.Keyboard
-
-    -- Send the key down and key up events
-    userInputService.InputBegan:Fire(inputObject)
-    wait(0.1)  -- Slight delay before simulating key release
-    userInputService.InputEnded:Fire(inputObject)
-end
-
--- Function to equip the mask
-local function equipMask()
-    -- Check if the player is on "Ghoul" or "CCG" team
-    if team == "Ghoul" or team == "CCG" then
-        simulateMKeyPress()  -- Simulate pressing "M"
-    end
-end
-
--- Toggle Auto Mask feature in the UI
-tab4:AddSwitch("Auto Equip Mask", function(bool)
-    autoMaskEnabled = bool
-
-    -- Equip mask immediately when toggled on
-    if autoMaskEnabled then
-        equipMask()  -- Equip the mask right away
-        spawn(autoEquipMaskLoop)  -- Start the loop to monitor mask equip
-    end
-end):Set(autoMaskEnabled)
-
--- Monitor and automatically equip the mask if needed
-local function autoEquipMaskLoop()
-    while autoMaskEnabled do
-        equipMask()  -- Simulate the "M" key press to equip the mask
-        wait(1)  -- Check every second
-    end
-end
-
 
 
 
