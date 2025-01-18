@@ -173,37 +173,39 @@ tab2:AddSlider("Distance from Gyakusatsu", function(x)
     myData.DistanceFromGya= x * -1
 end, {min = 0, max = 20}):Set(25)
 
--- Create Auto Wear Mask Switch in Tab 4
-tab4:AddSwitch("Auto Wear Mask", function(bool)
-    array.autoWearMask = bool
-end):Set(false)  -- Default to false (Auto Wear Mask is off)
+-- Create Auto Press M Switch in Tab 4
+tab4:AddSwitch("Auto Mask", function(bool)
+    array.autoPressM = bool
+end):Set(false)  -- Default to false (Auto Press M is off)
 
--- Main loop for Auto Wear Mask functionality
+-- Variable to track the state of the "M" key
+local mKeyPressed = false
+
+-- Main loop for Auto Press M functionality
 while true do
     if array.autofarm then
-        -- Auto Wear Mask functionality
-        if array.autoWearMask then
-            -- Check if the player has the mask equipped
-            if not findobj(player.Character, "Mask") then
-                -- Assuming 'Mask' is the name of the mask in the player's character
-                local mask = game.ReplicatedStorage:WaitForChild("Mask") -- Adjust this path to how your game stores items
-                if mask then
-                    -- Example of equipping the mask
-                    mask.Parent = player.Character
-                end
-            end
-        else
-            -- Logic to remove the mask when Auto Wear Mask is disabled
-            if findobj(player.Character, "Mask") then
-                -- Remove or unequip the mask
-                local mask = player.Character:FindFirstChild("Mask")
-                if mask then
-                    mask:Destroy()  -- Or you could set it to a different parent if that's how your game works
-                end
+        -- Auto Press M functionality
+        if array.autoPressM then
+            local UserInputService = game:GetService("UserInputService")
+            local virtualInputManager = game:GetService("VirtualInputManager")
+
+            -- Check if the "M" key is currently being pressed by the player
+            local mKeyState = UserInputService:IsKeyDown(Enum.KeyCode.M)
+
+            -- Only simulate pressing "M" if the player has not pressed it
+            if not mKeyState and not mKeyPressed then
+                -- Simulate pressing "M"
+                virtualInputManager:SendKeyPress(Enum.KeyCode.M)
+                wait(0.1)  -- Delay between presses
+                virtualInputManager:SendKeyRelease(Enum.KeyCode.M)
+                mKeyPressed = true  -- Track that the "M" key has been pressed by the script
+            elseif mKeyState then
+                -- If the player presses "M", reset the flag
+                mKeyPressed = false
             end
         end
     end
-    wait(1)  -- Delay to prevent spamming
+    wait(1)  -- Delay to prevent excessive checks
 end
 
 
