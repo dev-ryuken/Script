@@ -229,6 +229,36 @@ btn2 = tab3:AddButton("Start", function()
     end
 end)
 
+-- Auto Mask Feature
+local autoMaskEnabled = false
+
+-- Function to equip the mask based on the team
+local function equipMask()
+    if team == "Ghoul" or team == "CCG" then
+        local mask = player.Backpack:FindFirstChild("Mask")
+        if mask and not player.Character:FindFirstChild("Mask") then
+            mask.Parent = player.Character
+        end
+    end
+end
+
+-- Toggle Auto Mask feature in the UI
+tab4:AddSwitch("Auto Equip Mask", function(bool)
+    autoMaskEnabled = bool
+end):Set(autoMaskEnabled)
+
+-- Monitor and automatically equip the mask if needed
+local function autoEquipMaskLoop()
+    while autoMaskEnabled do
+        equipMask()
+        wait(1) -- Check every second
+    end
+end
+
+-- Start the auto equip mask loop
+spawn(autoEquipMaskLoop)
+
+
 labels.time = {label = tab3:AddLabel("")}
 
 tab4:AddSwitch("Auto add kagune/quinque stats", function(bool) array.weapon = bool end)
