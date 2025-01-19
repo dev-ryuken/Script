@@ -174,6 +174,7 @@ tab2:AddSlider("Distance from Gyakusatsu", function(x)
 end, {min = 0, max = 20}):Set(25)
 
 --mask option--
+
 tab4:AddSwitch("Auto Mask", function(bool)
     array.autoMask = bool
 
@@ -183,13 +184,17 @@ tab4:AddSwitch("Auto Mask", function(bool)
         if Char:FindFirstChild("KakujaMask") then return true end 
         return false
     end
-    
-   repeat wait(0.2)
-    if not Masked() and Meta.UIS.Masked then 
-        wait(1) 
-        InV("M", "Down", Mouse.Hit) 
-        wait(1) 
-    end
+
+    -- Separate mask action logic with the repeat loop
+    repeat 
+        wait(0.2)
+        if not Masked() and Meta.UIS.Masked then 
+            wait(1) 
+            InV("M", "Down", Mouse.Hit) 
+            wait(1) 
+        end
+    until not bool -- Stop when the switch is turned off
+
 end)
 
 
