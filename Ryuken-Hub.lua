@@ -175,27 +175,7 @@ end, {min = 0, max = 20}):Set(25)
 
 --mask option--
 
-tab4:AddSwitch("Auto Mask", function(bool)
-    array.autoMask = bool
 
-    local function Masked()
-        Update()
-        if Char:FindFirstChild("Mask") then return true end
-        if Char:FindFirstChild("KakujaMask") then return true end 
-        return false
-    end
-
-    -- Separate mask action logic with the repeat loop
-    repeat 
-        wait(0.2)
-        if not Masked() and Meta.UIS.Masked then 
-            wait(1) 
-            InV("M", "Down", Mouse.Hit) 
-            wait(1) 
-        end
-    until not bool -- Stop when the switch is turned off
-
-end)
 
 
     
@@ -264,6 +244,26 @@ tab4:AddSwitch("Auto add kagune/quinque stats", function(bool) array.weapon = bo
 tab4:AddSwitch("Auto add durability stats", function(bool) array.dura = bool end)
 tab4:AddSwitch("Auto kick", function(bool) array.kick = bool end)
 tab4:AddLabel("Auto kick whitelist (type 1 name per line)")
+tab4:AddSwitch("Auto Mask", function(bool) array.mask = bool
+    
+
+    local function Masked()
+        Update()
+        if Char:FindFirstChild("Mask") then return true end
+        if Char:FindFirstChild("KakujaMask") then return true end 
+        return false
+    end
+
+    -- Separate mask action logic with the repeat loop
+    repeat 
+        wait(0.2)
+        if not Masked() and Meta.UIS.Masked then 
+            wait(1) 
+            InV("M", "Down", Mouse.Hit) 
+            wait(1) 
+        end
+    until not bool -- Stop when the switch is turned off
+end)
 
 local console = tab4:AddConsole({
     ["y"] = 50,
