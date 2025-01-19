@@ -235,7 +235,6 @@ labels.time = {label = tab3:AddLabel("")}
 
 tab4:AddSwitch("Auto add kagune/quinque stats", function(bool) array.weapon = bool end)
 tab4:AddSwitch("Auto add durability stats", function(bool) array.dura = bool end)
-tab4:AddSwitch("Auto Mask", function(bool) array.autoMask = bool
 tab4:AddSwitch("Auto kick", function(bool) array.kick = bool end)
 tab4:AddLabel("Auto kick whitelist (type 1 name per line)")
 
@@ -432,46 +431,7 @@ coroutine.wrap(function()
     end
 end)()
 
-        -- Add Auto Mask switch in your Misc tab
-tab4:AddSwitch("Auto Mask", function(bool)
-    array.autoMask = bool
-    -- Function to check if the player is already wearing a mask
-    local function Masked()
-        -- You can adjust the mask names according to your game’s mask items.
-        if Char:FindFirstChild("Mask") then return true end
-        if Char:FindFirstChild("KakujaMask") then return true end 
-        return false
-    end
-
-    -- If Auto Mask is enabled, keep checking and equipping the mask
-    while array.autoMask do
-        if not Masked() then  -- If no mask is equipped
-            -- Assuming "Mask" is the object representing the mask in your game.
-            local mask = game.ReplicatedStorage:FindFirstChild("Mask")  -- Update the path if needed
-            if mask then
-                -- Equip the mask by setting its parent to the character (you may adjust this depending on your game)
-                mask.Parent = Char
-                print("Equipped mask!")
-            end
-        end
-        wait(1)  -- Check every second
-    end
-end)
-
--- This is to ensure that if the player dies, they won't be stuck without the mask
-player.CharacterAdded:Connect(function(character)
-    Char = character
-    -- If Auto Mask is on, equip the mask when respawned
-    if array.autoMask then
-        local mask = game.ReplicatedStorage:FindFirstChild("Mask")  -- Adjust path accordingly
-        if mask then
-            mask.Parent = Char
-            print("Equipped mask on respawn!")
-        end
-    end
-end)
-
-
+       
 -- remote Key grabber + grab updated trainers table
 do
     fireclickdetector(workspace.TrainerModel.ClickIndicator.ClickDetector)
