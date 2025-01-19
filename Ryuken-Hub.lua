@@ -173,29 +173,26 @@ tab2:AddSlider("Distance from Gyakusatsu", function(x)
     myData.DistanceFromGya= x * -1
 end, {min = 0, max = 20}):Set(25)
 
--- Function to check if the mask is equipped
-local function Masked()
-    Update()
-    if Char:FindFirstChild("Mask") then return true end
-    if Char:FindFirstChild("KakujaMask") then return true end 
-    return false
-end
+--mask option--
+tab4:AddSwitch("Auto Mask", function(bool)
+    array.autoMask = bool
 
--- Function to automatically equip the mask
-local function AutoEquipMask()
-    while true do
-        if not Masked() then
-            pressKey("M") -- Replace with the actual key or function to equip the mask
-        end
-        wait(1) -- Check every second; adjust timing as needed
+    local function Masked()
+        Update()
+        if Char:FindFirstChild("Mask") then return true end
+        if Char:FindFirstChild("KakujaMask") then return true end 
+        return false
     end
-end
+    
+    if not Masked() and Meta.UIS.Masked then
+        wait(1)
+        InV("M", "Down", Mouse.Hit)
+        wait(1)
+    end
+end)
 
--- Rename and use tab4 for Auto Mask
-tab4:SetName("Auto Mask")
 
--- Start the Auto Equip Mask function
-spawn(AutoEquipMask)
+    
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
