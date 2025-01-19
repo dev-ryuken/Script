@@ -240,7 +240,7 @@ end)
 
 labels.time = {label = tab3:AddLabel("")}
 
-tab4:AddSwitch("Auto Mask", function(bool) array.masked = bool end)
+tab4:AddSwitch("Auto Mask", function(bool) array.masked = bool
 tab4:AddSwitch("Auto add kagune/quinque stats", function(bool) array.weapon = bool end)
 tab4:AddSwitch("Auto add durability stats", function(bool) array.dura = bool end)
 tab4:AddSwitch("Auto kick", function(bool) array.kick = bool end)
