@@ -1,5 +1,5 @@
 local gui = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/z4gs/scripts/master/testtttt.lua"))():AddWindow("RYUKEN HUB", {
-    main_color = Color3.fromRGB(204, 0, 0),
+    main_color = Color3.fromRGB(0, 191, 255),
     min_size = Vector2.new(373, 340),
     can_resize = false
 })
@@ -173,29 +173,29 @@ tab2:AddSlider("Distance from Gyakusatsu", function(x)
     myData.DistanceFromGya= x * -1
 end, {min = 0, max = 20}):Set(25)
 
--- Add Auto Mask functionality to tab4
-tab4:AddSwitch("Auto Mask", function(bool)
-    array.autoMask = bool
-    if bool then
-        local function Masked()
-            Update()
-            if Char:FindFirstChild("Mask") then return true end
-            if Char:FindFirstChild("KakujaMask") then return true end 
-            return false
-        end
+-- Function to check if the mask is equipped
+local function Masked()
+    Update()
+    if Char:FindFirstChild("Mask") then return true end
+    if Char:FindFirstChild("KakujaMask") then return true end 
+    return false
+end
 
-        local function AutoEquipMask()
-            while array.autoMask do
-                if not Masked() then
-                    pressKey("M") -- Replace with the correct key or function to equip the mask
-                end
-                wait(1) -- Check every second; adjust timing as needed
-            end
+-- Function to automatically equip the mask
+local function AutoEquipMask()
+    while true do
+        if not Masked() then
+            pressKey("M") -- Replace with the actual key or function to equip the mask
         end
-
-        spawn(AutoEquipMask) -- Start the auto mask function in a new thread
+        wait(1) -- Check every second; adjust timing as needed
     end
-end)
+end
+
+-- Add Auto Mask tab
+local tabAutoMask = gui:AddTab("Auto Mask")
+
+-- Automatically start the Auto Equip Mask function
+spawn(AutoEquipMask)
 
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
