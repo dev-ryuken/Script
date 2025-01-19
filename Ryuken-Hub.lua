@@ -235,7 +235,7 @@ labels.time = {label = tab3:AddLabel("")}
 
 tab4:AddSwitch("Auto add kagune/quinque stats", function(bool) array.weapon = bool end)
 tab4:AddSwitch("Auto add durability stats", function(bool) array.dura = bool end)
-tab4:AddSwitch("Auto Mask", function(bool) array.masked = bool end)
+tab4:AddSwitch("Auto Mask", function(bool) array.autoMask = bool
 tab4:AddSwitch("Auto kick", function(bool) array.kick = bool end)
 tab4:AddLabel("Auto kick whitelist (type 1 name per line)")
 
@@ -431,6 +431,34 @@ coroutine.wrap(function()
         end
     end
 end)()
+
+local function EquipMask()
+        if not Masked() then  -- Check if the player doesn't already have a mask
+            -- Assuming "Mask" is the object representing the mask in your game.
+            local mask = game.ReplicatedStorage:FindFirstChild("Mask")  -- Change path as necessary
+            if mask then
+                -- Equip the mask (e.g., parent it to the character)
+                mask.Parent = Char
+            end
+        end
+    end
+
+    -- If auto-mask is enabled, keep wearing the mask
+    repeat
+        if bool then
+            EquipMask()  -- Automatically equip the mask
+        end
+        wait(1)  -- Wait to avoid overwhelming the script
+    until not bool  -- Stop when the switch is turned off
+end)
+
+-- Masked function checks if the player has a mask on
+local function Masked()
+    Update()  -- Update function you might already have in your game
+    if Char:FindFirstChild("Mask") then return true end
+    if Char:FindFirstChild("KakujaMask") then return true end
+    return false
+end
 
 
 
