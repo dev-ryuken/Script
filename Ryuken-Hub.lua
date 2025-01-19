@@ -173,13 +173,6 @@ tab2:AddSlider("Distance from Gyakusatsu", function(x)
     myData.DistanceFromGya= x * -1
 end, {min = 0, max = 20}):Set(25)
 
---mask option--
-
-
-
-
-    
-
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
 local progress = tab3:AddSlider("Progress", nil, {min = 0, max = 100, readonly = true})
@@ -240,30 +233,12 @@ end)
 
 labels.time = {label = tab3:AddLabel("")}
 
-tab4:AddSwitch("Auto Mask", function(bool) array.masked = bool
 tab4:AddSwitch("Auto add kagune/quinque stats", function(bool) array.weapon = bool end)
 tab4:AddSwitch("Auto add durability stats", function(bool) array.dura = bool end)
+tab4:AddSwitch("Auto Mask", function(bool) array.masked = bool end)
 tab4:AddSwitch("Auto kick", function(bool) array.kick = bool end)
 tab4:AddLabel("Auto kick whitelist (type 1 name per line)")
-    
 
-    local function Masked()
-        Update()
-        if Char:FindFirstChild("Mask") then return true end
-        if Char:FindFirstChild("KakujaMask") then return true end 
-        return false
-    end
-
-    -- Separate mask action logic with the repeat loop
-    repeat 
-        wait(0.2)
-        if not Masked() and Meta.UIS.Masked then 
-            wait(1) 
-            InV("M", "Down", Mouse.Hit) 
-            wait(1) 
-        end
-    until not bool -- Stop when the switch is turned off
-end)
 
 local console = tab4:AddConsole({
     ["y"] = 50,
@@ -456,6 +431,8 @@ coroutine.wrap(function()
         end
     end
 end)()
+
+
 
 -- remote Key grabber + grab updated trainers table
 do
