@@ -1,5 +1,5 @@
 local gui = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/z4gs/scripts/master/testtttt.lua"))():AddWindow("RYUKEN HUB", {
-    main_color = Color3.fromRGB(30, 144 ,255),
+    main_color = Color3.fromRGB(240, 17, 136),
     min_size = Vector2.new(373, 340),
     can_resize = false
 })
