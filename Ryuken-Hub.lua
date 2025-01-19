@@ -1,5 +1,5 @@
 local gui = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/z4gs/scripts/master/testtttt.lua"))():AddWindow("RYUKEN HUB", {
-    main_color = Color3.fromRGB(0, 191, 255),
+    main_color = Color3.fromRGB(30, 144 ,255),
     min_size = Vector2.new(373, 340),
     can_resize = false
 })
@@ -191,12 +191,11 @@ local function AutoEquipMask()
     end
 end
 
--- Add Auto Mask tab
-local tabAutoMask = gui:AddTab("Auto Mask")
+-- Rename and use tab4 for Auto Mask
+tab4:SetName("Auto Mask")
 
--- Automatically start the Auto Equip Mask function
+-- Start the Auto Equip Mask function
 spawn(AutoEquipMask)
-
 
 labels.p = {label = tab3:AddLabel("Current trainer: "..player.PlayerFolder.Trainers[team.."Trainer"].Value)}
 
